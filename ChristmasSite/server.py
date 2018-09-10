@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 try:
     from ChristmasSite.config import Config
 except:
@@ -7,7 +7,6 @@ app = Flask(__name__)
 
 config = Config()
 
-@app.route("/")
 def main():
     """ Primary access point """
 
@@ -18,9 +17,15 @@ def main():
     args = parser.parse_args()
 
     app.jinja_env.globals.update(parse_endpoint=config.endpoint)
+
+    app.jinja_env.auto_reload = True
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
     
     app.run(host=args.host, port=args.port)
-    return "Hello World!"
+
+@app.route("/", methods=['GET'])
+def server():
+    return render_template('main_page.html', name='Steven')
 
 if __name__ == '__main__':
     main()
